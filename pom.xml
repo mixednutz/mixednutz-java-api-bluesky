@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	
+	<groupId>net.mixednutz</groupId>
+	<artifactId>mixednutz-java-api-bluesky</artifactId>
+	<version>2.1.2-SNAPSHOT</version>
+	<packaging>jar</packaging>
+
+	<name>MixedNutz Java API Bluesky Apapter</name>
+	<url>https://www.mixednutz.net</url>
+	<description>MixedNutz API for Java.  Contains Bluesky Adapter</description>
+	
+	<!-- 
+		Using Spring Boot Starter to keep dependencies syncronized across projects
+	 -->
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.6.14</version>
+		<relativePath /> <!-- lookup parent from repository -->
+	</parent>
+	
+	<organization>
+        <name>Andrew Festa</name>
+        <url>http://www.andrewfesta.com</url>
+    </organization>
+        
+    <scm>
+		<connection>scm:git:ssh://git@github.com/mixednutz/mixednutz-java-api-bluesky.git</connection>
+		<developerConnection>scm:git:ssh://git@github.com/mixednutz/mixednutz-java-api-bluesky.git</developerConnection>
+		<url>https://github.com/mixednutz/mixednutz-java-api-bluesky</url>
+		<tag>HEAD</tag>
+    </scm>
+	
+	<!-- 
+		Deploy JARs to GitHub
+	 -->
+	<distributionManagement>
+	   	<repository>
+     			<id>github</id>
+     			<name>GitHub MixedNutz Apache Maven Packages</name>
+     			<url>https://maven.pkg.github.com/mixednutz/${project.artifactId}</url>
+   		</repository>
+	</distributionManagement>
+	
+	<repositories>
+		<repository>
+			<id>github</id>
+        	<name>GitHub Mixednutz Apache Maven Packages</name>
+			<url>https://maven.pkg.github.com/mixednutz/mixednutz-java-api</url>
+			<releases><enabled>true</enabled></releases>
+       		<snapshots><enabled>true</enabled></snapshots>
+		</repository>
+		<repository>
+			<id>github-mixednutz-java-api-core</id>
+			<url>https://maven.pkg.github.com/mixednutz/mixednutz-java-api-core</url>
+			<releases><enabled>true</enabled></releases>
+       		<snapshots><enabled>true</enabled></snapshots>
+		</repository>
+	</repositories>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<java.version>11</java.version>
+		
+		<mixednutz-api-core.version>2.1.2</mixednutz-api-core.version>
+		<spring-social.version>1.1.6.RELEASE</spring-social.version>
+		
+	
+	</properties>
+
+	<build>
+		<plugins>
+			<!-- Maven Release Plugin -->
+			<plugin>
+				<artifactId>maven-release-plugin</artifactId>
+				<version>2.4.2</version>
+				<dependencies>
+					<dependency>
+						<groupId>org.apache.maven.scm</groupId>
+						<artifactId>maven-scm-provider-gitexe</artifactId>
+						<version>1.8.1</version>
+					</dependency>
+				</dependencies>
+			</plugin>
+			
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId> 
+				<configuration>
+					<properties>
+	                    <excludeTags>IntegrationTest</excludeTags>
+	                </properties>
+    			</configuration>
+			 </plugin>
+			 
+			 <plugin>
+			 	<groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <configuration>
+                	<includes>
+				      <include>**/*.java</include>
+				    </includes>
+                    <properties>
+	                    <includeTags>IntegrationTest</includeTags>
+	                </properties>
+                </configuration>
+             </plugin>
+		</plugins>
+	</build>
+	
+	<dependencies>
+	
+		<dependency>
+			<groupId>net.mixednutz</groupId>
+			<artifactId>mixednutz-java-api-core</artifactId>
+			<version>${mixednutz-api-core.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>net.mixednutz</groupId>
+			<artifactId>mixednutz-java-api-core</artifactId>
+			<version>${mixednutz-api-core.version}</version>
+			<classifier>tests</classifier>
+			<scope>test</scope>
+		</dependency>
+		
+		<!--  Spring -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		
+		<!-- Spring Social -->
+		<dependency>
+	        <groupId>org.springframework.social</groupId>
+	        <artifactId>spring-social-web</artifactId>
+	        <version>${spring-social.version}</version>
+	        <scope>provided</scope>
+	    </dependency>
+	
+		<!-- Jackson Annotations for JSON serialization -->
+		<dependency>
+		    <groupId>com.fasterxml.jackson.datatype</groupId>
+		    <artifactId>jackson-datatype-jsr310</artifactId>
+		    <scope>provided</scope>
+		</dependency>
+		
+		<!-- Spring Web for REST client actions -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+		    <artifactId>spring-web</artifactId>
+		    <scope>provided</scope>
+		</dependency>
+		
+	    <!-- Bluesky -->
+		
+		 <!-- JWT -->
+		<dependency>
+		    <groupId>com.auth0</groupId>
+		    <artifactId>java-jwt</artifactId>
+		    <version>4.4.0</version>
+		    <exclusions>
+		    	<exclusion>
+		    		<groupId>com.fasterxml.jackson.core</groupId>
+		    		<artifactId>jackson-databind</artifactId>
+		    	</exclusion>
+		    </exclusions>
+		</dependency>
+				
+		<!-- Testing -->
+	  	<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>  
+		
+	</dependencies>
+
+</project>
