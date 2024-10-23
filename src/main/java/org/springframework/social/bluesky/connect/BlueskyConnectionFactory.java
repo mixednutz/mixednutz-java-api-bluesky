@@ -13,6 +13,12 @@ public class BlueskyConnectionFactory extends ConnectionFactory<Bluesky> {
 	public BlueskyConnectionFactory(RestTemplateBuilder restTemplateBuilder, String handle, String password, String pdsHost) {
 		super("bluesky", new BlueskyServiceProvider(restTemplateBuilder, handle, password, pdsHost), new BlueskyApiAdapter());
 	}
+	
+	public Connection<Bluesky> createConnection() {
+		return new BlueskyConnection(getProviderId(), null,
+				(BlueskyServiceProvider)getServiceProvider(), 
+				this.getApiAdapter());
+	}
 
 	@Override
 	public Connection<Bluesky> createConnection(ConnectionData data) {
