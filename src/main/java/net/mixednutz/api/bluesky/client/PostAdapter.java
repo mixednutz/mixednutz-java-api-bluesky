@@ -4,11 +4,11 @@ import java.util.Collections;
 import java.util.Map;
 
 import org.springframework.social.bluesky.api.Bluesky;
-import org.springframework.social.bluesky.api.BlueskyPostElement;
 import org.springframework.social.bluesky.api.Post;
 import org.springframework.social.bluesky.api.RecordResponse;
 import org.springframework.social.connect.Connection;
 
+import net.mixednutz.api.bluesky.model.BlueskyPostElement;
 import net.mixednutz.api.bluesky.model.PostForm;
 import net.mixednutz.api.client.PostClient;
 import net.mixednutz.api.model.ITimelineElement;
