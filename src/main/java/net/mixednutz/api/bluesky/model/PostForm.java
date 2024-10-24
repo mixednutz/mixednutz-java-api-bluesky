@@ -105,6 +105,10 @@ public class PostForm implements IPost {
 	public void setTags(String[] tags) {
 		this.tagsPart = tags;
 	}
+	
+	public void setComposeBody(String text) {
+		setText(text);
+	}
 
 	@Override
 	public void setText(String text) {
