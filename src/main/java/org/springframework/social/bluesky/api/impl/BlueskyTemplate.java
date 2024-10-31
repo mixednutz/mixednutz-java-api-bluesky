@@ -7,6 +7,7 @@ import java.util.LinkedHashMap;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.social.bluesky.api.AtprotoOperations;
+import org.springframework.social.bluesky.api.BlobResponse;
 import org.springframework.social.bluesky.api.Bluesky;
 import org.springframework.social.bluesky.api.Post;
 import org.springframework.social.bluesky.api.Profile;
@@ -83,6 +84,12 @@ public class BlueskyTemplate implements Bluesky {
 		authenticate();
 		
 		return atproto.createRecord(handle, "app.bsky.feed.post", post);
+	}
+	
+	public BlobResponse uploadBlob(byte[] data, String mimeType) {
+		authenticate();
+		
+		return atproto.uploadBlob(data, mimeType);
 	}
 
 	@Override

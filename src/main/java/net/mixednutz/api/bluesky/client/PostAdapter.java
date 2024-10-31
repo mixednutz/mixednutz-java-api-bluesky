@@ -3,11 +3,15 @@ package net.mixednutz.api.bluesky.client;
 import java.util.Collections;
 import java.util.Map;
 
+import org.springframework.http.ResponseEntity;
+import org.springframework.social.bluesky.api.BlobResponse;
 import org.springframework.social.bluesky.api.Bluesky;
 import org.springframework.social.bluesky.api.Post;
 import org.springframework.social.bluesky.api.RecordResponse;
 import org.springframework.social.connect.Connection;
+import org.springframework.web.client.RestTemplate;
 
+import net.mixednutz.api.bluesky.client.OembedClient.Oembed;
 import net.mixednutz.api.bluesky.model.BlueskyPostElement;
 import net.mixednutz.api.bluesky.model.PostForm;
 import net.mixednutz.api.client.PostClient;
@@ -16,6 +20,7 @@ import net.mixednutz.api.model.ITimelineElement;
 public class PostAdapter implements PostClient<PostForm> {
 	
 	private final Connection<Bluesky> conn;
+	OembedClient oembedClient = new OembedClient(new RestTemplate());
 	
 	public PostAdapter(Connection<Bluesky> conn) {
 		super();
@@ -24,9 +29,25 @@ public class PostAdapter implements PostClient<PostForm> {
 
 	@Override
 	public PostForm create() {
-		return new PostForm();
+		return new PostForm(this);
 	}
-
+	
+	public Oembed getOembed(String url) {
+		return oembedClient.lookupOembed(url);
+	}
+	
+	public Post.Thumb createThumb(String imageUrl) {
+		//download image url into bytes
+		ResponseEntity<byte[]> response = oembedClient.downloadFile(imageUrl);
+		
+		//reupoad
+		BlobResponse blob = conn.getApi().uploadBlob(
+				response.getBody(), 
+				response.getHeaders().getContentType().toString());
+		
+		return new Post.Thumb(blob);
+	}
+	
 	@Override
 	public ITimelineElement postToTimeline(PostForm post) {
 		Post record = post.toPostRecord();
@@ -38,5 +59,6 @@ public class PostAdapter implements PostClient<PostForm> {
 	public Map<String, Object> referenceDataForPosting() {
 		return Collections.emptyMap();
 	}
+	
 
 }

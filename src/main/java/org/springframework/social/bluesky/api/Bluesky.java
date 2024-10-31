@@ -10,6 +10,8 @@ public interface Bluesky {
 	
 	RecordResponse<Post> createPost(Post post);
 	
+	BlobResponse uploadBlob(byte[] data, String mimeType);
+	
 	RecordResponse<Post> getPost(String uri);
 	
 	AtprotoOperations getAtprotoOperations();

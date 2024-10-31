@@ -14,7 +14,7 @@ public class BlueskyAdapter implements MixednutzClient {
 	
 	private final Connection<Bluesky> conn;
 	PostAdapter postAdapter;
-
+	
 	public BlueskyAdapter(Connection<Bluesky> conn) {
 		super();
 		this.conn = conn;

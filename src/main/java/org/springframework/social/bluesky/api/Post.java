@@ -170,14 +170,28 @@ public class Post {
 		
 		public static final String TYPE = "app.bsky.embed.external";
 
-		private String uri;
-		private String title;
-		private String description;
+		private External external;
 		
 		public ExternalEmbed() {
 			super(TYPE);
 		}
 
+		public External getExternal() {
+			return external;
+		}
+
+		public void setExternal(External external) {
+			this.external = external;
+		}	
+		
+	}
+	
+	public static class External {
+		private String uri;
+		private String title;
+		private String description;
+		private Thumb thumb;
+		
 		public String getUri() {
 			return uri;
 		}
@@ -200,6 +214,55 @@ public class Post {
 
 		public void setDescription(String description) {
 			this.description = description;
+		}
+
+		public Thumb getThumb() {
+			return thumb;
+		}
+
+		public void setThumb(Thumb thumb) {
+			this.thumb = thumb;
+		}
+	}
+	
+	public static class Thumb {
+		@JsonProperty("$type")
+		private String type;
+		private Ref ref;
+		private String mimeType;
+		private long size;
+		
+		public Thumb() {
+		}
+		public Thumb(BlobResponse blob) {
+			this.type = blob.getType();
+			this.ref = new Ref(blob.getRef());
+			this.mimeType = blob.getMimeType();
+			this.size = blob.getSize();
+		}
+		public String getType() {
+			return type;
+		}
+		public void setType(String type) {
+			this.type = type;
+		}
+		public Ref getRef() {
+			return ref;
+		}
+		public void setRef(Ref ref) {
+			this.ref = ref;
+		}
+		public String getMimeType() {
+			return mimeType;
+		}
+		public void setMimeType(String mimeType) {
+			this.mimeType = mimeType;
+		}
+		public long getSize() {
+			return size;
+		}
+		public void setSize(long size) {
+			this.size = size;
 		}
 		
 	}

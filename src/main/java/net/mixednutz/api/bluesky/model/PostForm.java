@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.social.bluesky.api.Post;
+import org.springframework.social.bluesky.api.Post.External;
+import org.springframework.social.bluesky.api.Post.ExternalEmbed;
 import org.springframework.social.bluesky.api.Post.Facet;
 import org.springframework.social.bluesky.api.Post.Feature;
 import org.springframework.social.bluesky.api.Post.Index;
@@ -13,11 +15,13 @@ import org.springframework.social.bluesky.api.Post.Reply;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import net.mixednutz.api.bluesky.client.OembedClient.Oembed;
+import net.mixednutz.api.bluesky.client.PostAdapter;
 import net.mixednutz.api.model.IPost;
 
 public class PostForm implements IPost {
 	
-	private static final int MAX_TEXT_SIZE = 200;
+	private static final int MAX_TEXT_SIZE = 300;
 
 	String text;
 	
@@ -28,13 +32,34 @@ public class PostForm implements IPost {
 	String urlPart;
 	String[] tagsPart;
 	
+	PostAdapter postAdapter;
+	
 	public PostForm() {
 		super();
+	}
+	
+	public PostForm(PostAdapter postAdapter) {
+		this.postAdapter = postAdapter;
 	}
 
 	public PostForm(String text) {
 		super();
 		this.text = text;
+	}
+	
+	private int countUrlAndTagsLength() {
+		StringBuffer urlandtags = new StringBuffer()
+				.append(" ").append(urlPart);
+		if (tagsPart!=null) {
+			for (String tag: tagsPart) {
+				if (tag.startsWith("#")) {
+					urlandtags.append(" ").append(tag);
+				} else {
+					urlandtags.append(" #").append(tag);
+				}
+			}
+		}
+		return MAX_TEXT_SIZE - urlandtags.length();
 	}
 	
 	public Post toPostRecord() {
@@ -48,9 +73,11 @@ public class PostForm implements IPost {
 			List<Facet> facets = new ArrayList<>();
 			
 			//Shorten text
+			final int NEW_MAX_SIZE = countUrlAndTagsLength();
+			
 			StringBuffer buffer = new StringBuffer();
-			if (textPart.length()>MAX_TEXT_SIZE) {
-				buffer.append(textPart.substring(0, MAX_TEXT_SIZE-3))
+			if (textPart.length()>NEW_MAX_SIZE) {
+				buffer.append(textPart.substring(0, NEW_MAX_SIZE-3))
 					.append("...");
 			} else {
 				buffer.append(textPart);
@@ -60,6 +87,19 @@ public class PostForm implements IPost {
 					new Index(buffer.length()+1, buffer.length()+urlPart.length()+2), 
 					List.of(new Feature("app.bsky.richtext.facet#link",null,urlPart,null))));
 			buffer.append(" ").append(urlPart);
+			
+			//TODO get oembed from meta tags instead
+			Oembed oembed = postAdapter.getOembed(urlPart);
+			
+			External external = new External();
+			external.setUri(urlPart);
+			external.setTitle(oembed.getTitle());
+			external.setThumb(postAdapter.createThumb(oembed.getThumbnailUrl()));
+			external.setDescription(textPart);
+			
+			ExternalEmbed embed = new ExternalEmbed();
+			embed.setExternal(external);
+			post.setEmbed(embed);
 			
 			if (tagsPart!=null) {
 				for (String tag: tagsPart) {
@@ -83,6 +123,7 @@ public class PostForm implements IPost {
 			post.setReply(inReplyTo);
 		}
 		post.setCreatedAt(ZonedDateTime.now());
+		System.out.println(post.getText().length());
 		return post;
 	}
 

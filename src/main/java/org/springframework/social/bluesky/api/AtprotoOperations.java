@@ -6,4 +6,6 @@ public interface AtprotoOperations {
 	
 	<R> RecordResponse<R> getRecord(String repo, String collection, String recordKey, Class<R> recordType);
 	
+	BlobResponse uploadBlob(byte[] data, String mimeType);
+	
 }

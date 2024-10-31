@@ -3,8 +3,10 @@ package org.springframework.social.bluesky.api.impl;
 import java.net.URI;
 
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
 import org.springframework.social.bluesky.api.AtprotoOperations;
+import org.springframework.social.bluesky.api.BlobResponse;
 import org.springframework.social.bluesky.api.Post;
 import org.springframework.social.bluesky.api.RecordResponse;
 import org.springframework.web.client.RestOperations;
@@ -67,6 +69,21 @@ public class AtprotoTemplate implements AtprotoOperations {
 		}
 
 		return rest.exchange(requestEntity, new ParameterizedTypeReference<RecordResponse<R>>() {}).getBody();
+	}
+	
+	public BlobResponse uploadBlob(byte[] data, String mimeType) {
+		return uploadBlobInternal(data, mimeType).getBlob();
+	}
+	
+	UploadBlobResponse uploadBlobInternal(byte[] data, String mimeType) {		
+		RequestEntity<byte[]> requestEntity = RequestEntity
+				.post(getBaseUrl()+"/xrpc/com.atproto.repo.uploadBlob")
+				.header("Authorization", "Bearer "+bluesky.session().getAccessJwt())
+				.contentType(MediaType.parseMediaType(mimeType))
+				.accept(MediaType.APPLICATION_OCTET_STREAM)
+				.body(data);
+				
+		return rest.exchange(requestEntity, UploadBlobResponse.class).getBody();		
 	}
 		
 	static class CreateRecordRequest {
@@ -133,5 +150,18 @@ public class AtprotoTemplate implements AtprotoOperations {
 		}
 		
 	}
+	
+	static class UploadBlobResponse {
+		private BlobResponse blob;
 
+		public BlobResponse getBlob() {
+			return blob;
+		}
+
+		public void setBlob(BlobResponse blob) {
+			this.blob = blob;
+		}
+		
+	}
+	
 }
