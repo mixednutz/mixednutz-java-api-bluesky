@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.social.bluesky.api.Post;
-import org.springframework.social.bluesky.api.Post.External;
 import org.springframework.social.bluesky.api.Post.ExternalEmbed;
 import org.springframework.social.bluesky.api.Post.Facet;
 import org.springframework.social.bluesky.api.Post.Feature;
@@ -15,7 +14,6 @@ import org.springframework.social.bluesky.api.Post.Reply;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import net.mixednutz.api.bluesky.client.OembedClient.Oembed;
 import net.mixednutz.api.bluesky.client.PostAdapter;
 import net.mixednutz.api.model.IPost;
 
@@ -88,17 +86,7 @@ public class PostForm implements IPost {
 					List.of(new Feature("app.bsky.richtext.facet#link",null,urlPart,null))));
 			buffer.append(" ").append(urlPart);
 			
-			//TODO get oembed from meta tags instead
-			Oembed oembed = postAdapter.getOembed(urlPart);
-			
-			External external = new External();
-			external.setUri(urlPart);
-			external.setTitle(oembed.getTitle());
-			external.setThumb(postAdapter.createThumb(oembed.getThumbnailUrl()));
-			external.setDescription(textPart);
-			
-			ExternalEmbed embed = new ExternalEmbed();
-			embed.setExternal(external);
+			ExternalEmbed embed = postAdapter.createExternalEmbed(urlPart);
 			post.setEmbed(embed);
 			
 			if (tagsPart!=null) {

@@ -176,6 +176,11 @@ public class Post {
 			super(TYPE);
 		}
 
+		public ExternalEmbed(External external) {
+			this();
+			this.external = external;
+		}
+
 		public External getExternal() {
 			return external;
 		}

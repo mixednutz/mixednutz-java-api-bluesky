@@ -8,6 +8,8 @@ import org.springframework.social.bluesky.api.BlobResponse;
 import org.springframework.social.bluesky.api.Bluesky;
 import org.springframework.social.bluesky.api.Post;
 import org.springframework.social.bluesky.api.RecordResponse;
+import org.springframework.social.bluesky.api.Post.External;
+import org.springframework.social.bluesky.api.Post.ExternalEmbed;
 import org.springframework.social.connect.Connection;
 import org.springframework.web.client.RestTemplate;
 
@@ -32,11 +34,20 @@ public class PostAdapter implements PostClient<PostForm> {
 		return new PostForm(this);
 	}
 	
-	public Oembed getOembed(String url) {
-		return oembedClient.lookupOembed(url);
+	public ExternalEmbed createExternalEmbed(String url) {
+		//TODO get oembed from meta tags instead
+		Oembed oembed = oembedClient.lookupOembed(url);
+		
+		External external = new External();
+		external.setUri(url);
+		external.setTitle(oembed.getTitle());
+		external.setThumb(createThumb(oembed.getThumbnailUrl()));
+		external.setDescription("N/A");
+		
+		return new ExternalEmbed(external);
 	}
 	
-	public Post.Thumb createThumb(String imageUrl) {
+	private Post.Thumb createThumb(String imageUrl) {
 		//download image url into bytes
 		ResponseEntity<byte[]> response = oembedClient.downloadFile(imageUrl);
 		
