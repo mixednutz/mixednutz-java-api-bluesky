@@ -13,6 +13,7 @@ import org.springframework.social.bluesky.api.RecordResponse;
 import org.springframework.social.connect.Connection;
 import org.springframework.web.client.RestTemplate;
 
+import net.mixednutz.api.BlueskyConfig.BlueskyConnectionProperties;
 import net.mixednutz.api.bluesky.client.EmbedClient.ExtractedMetadata;
 import net.mixednutz.api.bluesky.model.BlueskyPostElement;
 import net.mixednutz.api.bluesky.model.PostForm;
@@ -22,11 +23,12 @@ import net.mixednutz.api.model.ITimelineElement;
 public class PostAdapter implements PostClient<PostForm> {
 	
 	private final Connection<Bluesky> conn;
-	EmbedClient embedClient = new EmbedClient(new RestTemplate());
+	private EmbedClient embedClient;
 	
-	public PostAdapter(Connection<Bluesky> conn) {
+	public PostAdapter(Connection<Bluesky> conn, BlueskyConnectionProperties blueskyProps) {
 		super();
 		this.conn = conn;
+		this.embedClient = new EmbedClient(new RestTemplate(), blueskyProps.getEmbedMetadataServiceUrl());
 	}
 
 	@Override

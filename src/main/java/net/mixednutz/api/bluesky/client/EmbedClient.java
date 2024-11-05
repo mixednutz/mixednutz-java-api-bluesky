@@ -4,19 +4,18 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestOperations;
 
 public class EmbedClient {
-	
-	//TODO make this configurable
-	private String baseurl = "https://tfemily.com/embed/metadata?url=";
-	
+		
 	private final RestOperations rest;
+	private final String embedServiceUrl;
 
-	public EmbedClient(RestOperations rest) {
+	public EmbedClient(RestOperations rest, String embedServiceUrl) {
 		super();
 		this.rest = rest;
+		this.embedServiceUrl = embedServiceUrl;
 	}
 	
 	ExtractedMetadata lookupEmbedMetadata(String url) {
-		return rest.getForEntity(baseurl+url, ExtractedMetadata.class).getBody();
+		return rest.getForEntity(embedServiceUrl+url, ExtractedMetadata.class).getBody();
 	}
 	
 	ResponseEntity<byte[]> downloadFile(String url) {

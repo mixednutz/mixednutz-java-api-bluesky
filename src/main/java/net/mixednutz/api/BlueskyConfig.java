@@ -29,7 +29,7 @@ public class BlueskyConfig {
 	}
 	@Bean
 	public BlueskyProvider blueskyService(RestTemplateBuilder restTemplateBuilder) {
-		return new BlueskyProvider(blueskyConnectionFactory(restTemplateBuilder));
+		return new BlueskyProvider(blueskyConnectionFactory(restTemplateBuilder), getBluesky());
 	}
 	
 	@Bean
@@ -57,6 +57,7 @@ public class BlueskyConfig {
 		private String handle;
 		private String password;
 		private String pdsHost;
+		private String embedMetadataServiceUrl;
 		
 		public String getHandle() {
 			return handle;
@@ -76,7 +77,13 @@ public class BlueskyConfig {
 		public void setPdsHost(String pdsHost) {
 			this.pdsHost = pdsHost;
 		}
-		
+		public String getEmbedMetadataServiceUrl() {
+			return embedMetadataServiceUrl;
+		}
+		public void setEmbedMetadataServiceUrl(String embedMetadataServiceUrl) {
+			this.embedMetadataServiceUrl = embedMetadataServiceUrl;
+		}
+				
 	}
 
 }
