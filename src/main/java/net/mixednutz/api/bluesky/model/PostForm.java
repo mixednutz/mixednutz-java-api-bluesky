@@ -86,8 +86,12 @@ public class PostForm implements IPost {
 					List.of(new Feature("app.bsky.richtext.facet#link",null,urlPart,null))));
 			buffer.append(" ").append(urlPart);
 			
-			ExternalEmbed embed = postAdapter.createExternalEmbed(urlPart);
-			post.setEmbed(embed);
+			try {
+				ExternalEmbed embed = postAdapter.createExternalEmbed(urlPart);
+				post.setEmbed(embed);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 			
 			if (tagsPart!=null) {
 				for (String tag: tagsPart) {

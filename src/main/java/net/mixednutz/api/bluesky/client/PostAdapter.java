@@ -42,9 +42,10 @@ public class PostAdapter implements PostClient<PostForm> {
 		External external = new External();
 		external.setUri(url);
 		external.setTitle(embed.getTitle());
-		external.setThumb(createThumb(embed.getImageUrl()));
+		if (embed.getImageUrl()!=null) {
+			external.setThumb(createThumb(embed.getImageUrl()));
+		}
 		external.setDescription(embed.getDescription());
-		
 		return new ExternalEmbed(external);
 	}
 	
