@@ -166,6 +166,7 @@ public class Post {
 				
 	}
 	
+	@JsonInclude(JsonInclude.Include.NON_NULL)
 	public static class ExternalEmbed extends Embed {
 		
 		public static final String TYPE = "app.bsky.embed.external";
@@ -191,6 +192,7 @@ public class Post {
 		
 	}
 	
+	@JsonInclude(JsonInclude.Include.NON_NULL)
 	public static class External {
 		private String uri;
 		private String title;
@@ -230,6 +232,7 @@ public class Post {
 		}
 	}
 	
+	@JsonInclude(JsonInclude.Include.NON_NULL)
 	public static class Thumb {
 		@JsonProperty("$type")
 		private String type;
