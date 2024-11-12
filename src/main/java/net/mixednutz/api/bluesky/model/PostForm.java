@@ -115,7 +115,6 @@ public class PostForm implements IPost {
 			post.setReply(inReplyTo);
 		}
 		post.setCreatedAt(ZonedDateTime.now());
-		System.out.println(post.getText().length());
 		return post;
 	}
 
