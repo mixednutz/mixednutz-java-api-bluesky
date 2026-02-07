@@ -72,6 +72,11 @@ public class PostAdapter implements PostClient<PostForm> {
 	public Map<String, Object> referenceDataForPosting() {
 		return Collections.emptyMap();
 	}
+
+	@Override
+	public boolean canPost() {
+		return true;
+	}
 	
 
 }
